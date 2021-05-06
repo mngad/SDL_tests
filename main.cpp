@@ -9,6 +9,8 @@
 #include <SDL_ttf.h>
 #include <vector>
 #include <time.h>
+//#include "grid.h"
+#include "var.h"
 using namespace std;
 
 
@@ -99,33 +101,37 @@ void close()
 }
 
 
-void draw(Block block){
+void draw(vector<Block> blocks){
 
   
     //Clear screen
     SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
     SDL_RenderClear( gRenderer );
+    for(Block block : blocks){
 
-    SDL_Rect fillRect = { block.getPosX(), block.getPosY(),block.BLOCK_WIDTH,block.BLOCK_HEIGHT};
-    //Render red filled quad
-    SDL_SetRenderDrawColor( gRenderer, 0xFF, 0x00, 0x00, 0xFF );		
-    SDL_RenderFillRect( gRenderer, &fillRect );
+        SDL_Rect fillRect = { block.getPosX(), block.getPosY(),BLOCK_WIDTH,BLOCK_HEIGHT};
+        //Render red filled quad
+        SDL_SetRenderDrawColor( gRenderer, 0xFF, 0x00, 0x00, 0xFF );		
+        SDL_RenderFillRect( gRenderer, &fillRect );
+    }
 
 }
 
-Block loop(Block block){
+vector<Block> loop(vector<Block> blocks, Grid grid){
 
 
-    SDL_Event e;
-    cout<< "block.getlastUpdate() = " <<block.getlastUpdate() << endl;
+
     Uint32 time = SDL_GetTicks();
-	float dT = (time - block.getlastUpdate()) / 1000.0f;
-    block.move(dT);
-    cout<< "time = "<<time<<endl;
-    block.setlastUpdate(time);
-    cout<< "block.getlastUpdate() = " <<block.getlastUpdate() << endl;
-    draw(block);
-    return block;
+    for(Block block : blocks){
+        float dT = (time - block.getlastUpdate()) / 1000.0f;
+        block.move(dT, grid);
+
+        block.setlastUpdate(time);
+
+        
+    }
+    draw(blocks);
+    return blocks;
 
 }
 
@@ -145,10 +151,20 @@ int main( int argc, char* args[] )
         //Event handler
         SDL_Event e;
 
+        vector<Block> blocks;
+        for(int i =1;i<5;i++){
+            Block block(i*5,5);
+            blocks.push_back(block);
+        }
+        
+        for(Block b: blocks){
 
-        Block block;
-        block.setlastUpdate(SDL_GetTicks());
-        block.setBorn(SDL_GetTicks());
+       
+            b.setlastUpdate(SDL_GetTicks());
+            b.setBorn(SDL_GetTicks());
+        }
+       
+        Grid grid;
         //While application is running
         while( !quit )
         {
@@ -172,8 +188,10 @@ int main( int argc, char* args[] )
 
 
             
-            block = loop(block);
-            
+            blocks = loop(blocks, grid);
+          
+
+            grid.printFilled();
 
             //Update screen
             SDL_RenderPresent( gRenderer );
@@ -184,8 +202,8 @@ int main( int argc, char* args[] )
             float frameTime = (endTicks - startTicks) / 1000.0f;
           
             // Display strings
-            cout<< frameTime << endl;
-            SDL_Delay(floor(16.666f - frameTime));
+           // cout<< frameTime << endl;
+            SDL_Delay(floor(40.666f - frameTime));
 
             
             // Display window

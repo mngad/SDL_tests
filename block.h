@@ -1,6 +1,5 @@
 #include <SDL.h>
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+#include "grid.h"
 
 const float GRAVITY = 100.0f; 
 
@@ -8,20 +7,19 @@ class Block
 {
     public:
         //The dimensions of the dot
-        static const int BLOCK_WIDTH = 5;
-        static const int BLOCK_HEIGHT = 5;
+
 
         //Maximum axis velocity of the dot
         static const int BLOCK_VEL = 10;
 
         //Initializes the variables
-        Block();
+        Block(int x,int y);
 
         //Takes key presses and adjusts the dot's velocity
         void handleEvent( SDL_Event& e );
 
         //Moves the dot
-        void move(float);
+        void move(float, Grid);
 
         int getPosX();
         int getPosY();

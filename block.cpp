@@ -3,14 +3,15 @@
 #include <SDL_image.h>
 #include "block.h"
 #include <iostream>
+#include "var.h"
 
 using namespace std;
 
 
-Block::Block(){
+Block::Block(int x, int y){
     //Initialize the offsets
-    mPosX = 0;
-    mPosY = 0;
+    mPosX = x;
+    mPosY = y;
 
     //Initialize the velocity
     mVelX = 0.f;
@@ -19,11 +20,13 @@ Block::Block(){
     Uint32 born, lastUpdate;
 }
 
-void Block::move(float dT)
+void Block::move(float dT, Grid grid)
 {   
-    cout << dT << endl;
-    cout<< mVelY <<endl;
- 
+    //cout << dT << endl;
+    //cout<< mVelY <<endl;
+    grid.setUnFilled(mPosX/5,mPosY/5);
+    int oldmPosX = mPosX;
+    int oldmPosY = mPosY;
     if(mPosY + BLOCK_HEIGHT>= SCREEN_HEIGHT){
         mPosY = SCREEN_HEIGHT - BLOCK_HEIGHT;
         mVelY = 0.0f;
@@ -31,8 +34,23 @@ void Block::move(float dT)
     else{
         mVelY += dT * GRAVITY;
         mPosY += mVelY * dT;
+        //cout<< "mpos before"<<mPosY <<endl;
+        if( mPosY % 5 != 0 ){
+            if(mPosY % 5 ==3) mPosY += 2;
+            if(mPosY % 5 ==4) mPosY += 1;
+            if(mPosY % 5 ==2) mPosY -= 2;
+            if(mPosY % 5 ==1) mPosY -= 1;
+        }
     }
-
+    // if(grid.checkEmpty(mPosX/5, mPosY/5) == true){
+    //     mPosX = oldmPosX;
+    //     mPosY = oldmPosY;
+    // }
+    grid.setFilled(mPosX/5,mPosY/5);
+    cout<< "mposX after "<< mPosX<<endl;
+    cout<< "mposX after "<< mPosX/5 <<endl;
+    cout<< "mposY after "<< mPosY<<endl;
+    cout<< "mposY after "<< mPosY/5 <<endl;
 
 }
 
