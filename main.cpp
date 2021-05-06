@@ -5,6 +5,12 @@
 #include <string>
 #include <cmath>
 #include "block.h"
+#include <iostream>
+#include <SDL_ttf.h>
+#include <vector>
+#include <time.h>
+using namespace std;
+
 
 
 //Starts up SDL and creates window
@@ -74,6 +80,7 @@ bool init()
 			}
 		}
 	}
+   
 
 	return success;
 }
@@ -92,20 +99,35 @@ void close()
 }
 
 
-void draw(SDL_Rect rect){
+void draw(Block block){
 
   
     //Clear screen
     SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
     SDL_RenderClear( gRenderer );
 
-
+    SDL_Rect fillRect = { block.getPosX(), block.getPosY(),block.BLOCK_WIDTH,block.BLOCK_HEIGHT};
     //Render red filled quad
     SDL_SetRenderDrawColor( gRenderer, 0xFF, 0x00, 0x00, 0xFF );		
-    SDL_RenderFillRect( gRenderer, &rect );
+    SDL_RenderFillRect( gRenderer, &fillRect );
 
 }
 
+Block loop(Block block){
+
+
+    SDL_Event e;
+    cout<< "block.getlastUpdate() = " <<block.getlastUpdate() << endl;
+    Uint32 time = SDL_GetTicks();
+	float dT = (time - block.getlastUpdate()) / 1000.0f;
+    block.move(dT);
+    cout<< "time = "<<time<<endl;
+    block.setlastUpdate(time);
+    cout<< "block.getlastUpdate() = " <<block.getlastUpdate() << endl;
+    draw(block);
+    return block;
+
+}
 
 int main( int argc, char* args[] )
 {
@@ -123,6 +145,10 @@ int main( int argc, char* args[] )
         //Event handler
         SDL_Event e;
 
+
+        Block block;
+        block.setlastUpdate(SDL_GetTicks());
+        block.setBorn(SDL_GetTicks());
         //While application is running
         while( !quit )
         {
@@ -135,11 +161,35 @@ int main( int argc, char* args[] )
                     quit = true;
                 }
             }
-            Block block;
-            draw(block.render());
+            srand(time(NULL));
+
+            Uint32 totalFrameTicks = 0;
+            Uint32 totalFrames = 0;
+
+            totalFrames++;
+            Uint32 startTicks = SDL_GetTicks();
+            Uint64 startPerf = SDL_GetPerformanceCounter();
+
+
+            
+            block = loop(block);
+            
 
             //Update screen
             SDL_RenderPresent( gRenderer );
+           // End frame timing
+            Uint32 endTicks = SDL_GetTicks();
+            Uint64 endPerf = SDL_GetPerformanceCounter();
+            Uint64 framePerf = endPerf - startPerf;
+            float frameTime = (endTicks - startTicks) / 1000.0f;
+          
+            // Display strings
+            cout<< frameTime << endl;
+            SDL_Delay(floor(16.666f - frameTime));
+
+            
+            // Display window
+            SDL_RenderPresent(gRenderer);
         }
 		
 	}

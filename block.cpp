@@ -2,7 +2,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "block.h"
+#include <iostream>
 
+using namespace std;
 
 
 Block::Block(){
@@ -11,35 +13,52 @@ Block::Block(){
     mPosY = 0;
 
     //Initialize the velocity
-    mVelX = 0;
-    mVelY = 0;
+    mVelX = 0.f;
+    mVelY = 0.f;
+
+    Uint32 born, lastUpdate;
 }
 
-void Block::move()
-{
-    //Move the dot left or right
-    mPosX += mVelX;
-
-    //If the dot went too far to the left or right
-    if( ( mPosX < 0 ) || ( mPosX + BLOCK_WIDTH > SCREEN_WIDTH ) )
-    {
-        //Move back
-        mPosX -= mVelX;
+void Block::move(float dT)
+{   
+    cout << dT << endl;
+    cout<< mVelY <<endl;
+ 
+    if(mPosY + BLOCK_HEIGHT>= SCREEN_HEIGHT){
+        mPosY = SCREEN_HEIGHT - BLOCK_HEIGHT;
+        mVelY = 0.0f;
     }
-        //Move the dot up or down
-    mPosY += mVelY;
-
-    //If the dot went too far up or down
-    if( ( mPosY < 0 ) || ( mPosY + BLOCK_HEIGHT > SCREEN_HEIGHT ) )
-    {
-        //Move back
-        mPosY -= mVelY;
+    else{
+        mVelY += dT * GRAVITY;
+        mPosY += mVelY * dT;
     }
+
+
 }
-SDL_Rect Block::render()
-{
-    //Show the dot
-    SDL_Rect fillRect = { mPosX, mPosY,BLOCK_WIDTH,BLOCK_HEIGHT};
-    return fillRect;
+
+
+int Block::getPosX(){
+    return mPosX;
 }
+int Block::getPosY(){
+    return mPosY;
+}
+void Block::setVelX(float VelX){
+    mVelX = VelX;
+
+}
+void Block::setVelY(float VelY){
+    mVelY = VelY;
+}
+void Block::setBorn(Uint32 _born){
+    born = _born;
+}
+void Block::setlastUpdate(Uint32 _lastUpdate){
+    lastUpdate = _lastUpdate;
+}
+
+Uint32 Block::getlastUpdate(){
+    return lastUpdate;
+}
+
 
