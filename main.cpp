@@ -4,28 +4,25 @@
 #include <stdio.h>
 #include <string>
 #include <cmath>
+#include "block.h"
 
-//Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
 
 //Starts up SDL and creates window
 bool init();
 
-//Loads media
-bool loadMedia();
 
 //Frees media and shuts down SDL
 void close();
 
-//Loads individual image as texture
-SDL_Texture* loadTexture( std::string path );
+
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
 
 //The window renderer
 SDL_Renderer* gRenderer = NULL;
+
+
 
 bool init()
 {
@@ -81,15 +78,6 @@ bool init()
 	return success;
 }
 
-bool loadMedia()
-{
-	//Loading success flag
-	bool success = true;
-
-	//Nothing to load
-	return success;
-}
-
 void close()
 {
 	//Destroy window	
@@ -103,44 +91,21 @@ void close()
 	SDL_Quit();
 }
 
-SDL_Texture* loadTexture( std::string path )
-{
-	//The final texture
-	SDL_Texture* newTexture = NULL;
 
-	//Load image at specified path
-	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
-	if( loadedSurface == NULL )
-	{
-		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
-	}
-	else
-	{
-		//Create texture from surface pixels
-        newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
-		if( newTexture == NULL )
-		{
-			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
-		}
+void draw(SDL_Rect rect){
 
-		//Get rid of old loaded surface
-		SDL_FreeSurface( loadedSurface );
-	}
-
-	return newTexture;
-}
-
-void draw(){
+  
     //Clear screen
     SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
     SDL_RenderClear( gRenderer );
 
+
     //Render red filled quad
-    SDL_Rect fillRect = { 2,2,4,4};
     SDL_SetRenderDrawColor( gRenderer, 0xFF, 0x00, 0x00, 0xFF );		
-    SDL_RenderFillRect( gRenderer, &fillRect );
+    SDL_RenderFillRect( gRenderer, &rect );
 
 }
+
 
 int main( int argc, char* args[] )
 {
@@ -151,38 +116,32 @@ int main( int argc, char* args[] )
 	}
 	else
 	{
-		//Load media
-		if( !loadMedia() )
-		{
-			printf( "Failed to load media!\n" );
-		}
-		else
-		{	
-			//Main loop flag
-			bool quit = false;
+		
+        //Main loop flag
+        bool quit = false;
 
-			//Event handler
-			SDL_Event e;
+        //Event handler
+        SDL_Event e;
 
-			//While application is running
-			while( !quit )
-			{
-				//Handle events on queue
-				while( SDL_PollEvent( &e ) != 0 )
-				{
-					//User requests quit
-					if( e.type == SDL_QUIT )
-					{
-						quit = true;
-					}
-				}
+        //While application is running
+        while( !quit )
+        {
+            //Handle events on queue
+            while( SDL_PollEvent( &e ) != 0 )
+            {
+                //User requests quit
+                if( e.type == SDL_QUIT )
+                {
+                    quit = true;
+                }
+            }
+            Block block;
+            draw(block.render());
 
-                draw();
-
-				//Update screen
-				SDL_RenderPresent( gRenderer );
-			}
-		}
+            //Update screen
+            SDL_RenderPresent( gRenderer );
+        }
+		
 	}
 
 	//Free resources and close SDL
