@@ -17,7 +17,7 @@ Grid::Grid(){
 }
 
 void Grid::setFilled(int x, int y){
-    std::cout<<"x * y" << x * y<< std::endl;
+    
     gridArray[x +(GRIDWIDTH * y)] = 1;
     //gridArray[9] = 8;
 
