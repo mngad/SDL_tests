@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "grid.h"
 
 const float GRAVITY = 100.0f; 
