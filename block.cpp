@@ -1,6 +1,6 @@
 //The dot that will move around on the screen
-#include <SDL.h>
-#include <SDL_image.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "block.h"
 #include <iostream>
 #include "var.h"

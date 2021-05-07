@@ -6,7 +6,7 @@
 #include <cmath>
 #include "block.h"
 #include <iostream>
-#include <SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 #include <vector>
 #include <time.h>
 //#include "grid.h"
