@@ -17,7 +17,7 @@ using namespace std;
 
 //Starts up SDL and creates window
 bool init();
-
+Grid grid;
 
 //Frees media and shuts down SDL
 void close();
@@ -111,7 +111,7 @@ void draw(vector<Block> blocks){
 
         SDL_Rect fillRect = { block.getPosX(), block.getPosY(),BLOCK_WIDTH,BLOCK_HEIGHT};
         //Render red filled quad
-        SDL_SetRenderDrawColor( gRenderer, 0xFF, 0x00, 0x00, 0xFF );		
+        SDL_SetRenderDrawColor( gRenderer, block.color[0], block.color[1], block.color[2], 0xFF );		
         SDL_RenderFillRect( gRenderer, &fillRect );
     }
 
@@ -122,12 +122,12 @@ vector<Block> loop(vector<Block> blocks, Grid grid){
 
 
     Uint32 time = SDL_GetTicks();
-    for(Block block : blocks){
-        float dT = (time - block.getlastUpdate()) / 1000.0f;
-        block.move(dT, grid);
+    for(int i = 0; i<blocks.size();i++){
+        float dT = (time - blocks[i].getlastUpdate()) / 1000.0f;
+        blocks[i].move(dT, grid);
 
-        block.setlastUpdate(time);
-
+        blocks[i].setlastUpdate(time);
+		
         
     }
     draw(blocks);
@@ -150,24 +150,40 @@ int main( int argc, char* args[] )
 
         //Event handler
         SDL_Event e;
-
+		int count = 0;
+		int bcount = 0;
         vector<Block> blocks;
-        for(int i =1;i<5;i++){
-            Block block(i*5,5);
-            blocks.push_back(block);
-        }
-        
-        for(Block b: blocks){
+		// for(int b = 1; b<20;b++){
+		// 	for(int i =1;i<20;i++){
+				
+		// 		Block block(i*5,5*b,bcount);
+		// 		blocks.push_back(block);
+		// 		bcount+=1;
+		// 	}
+			
+		// 	for(int i =14;i<34;i++){
+		// 		Block block(i*5,10*b*2,bcount);
+		// 		blocks.push_back(block);
+		// 		bcount+=1;
+		// 	}
+		// }
+		srand(time(NULL));
+		
+        // for(int i =0;i<blocks.size();i++){
 
+		
+
+		// 	blocks[i].setBorn(time);
+        //     blocks[i].setlastUpdate(time);
+            
+        // }
        
-            b.setlastUpdate(SDL_GetTicks());
-            b.setBorn(SDL_GetTicks());
-        }
-       
-        Grid grid;
+        
         //While application is running
         while( !quit )
         {
+			
+			count +=1;
             //Handle events on queue
             while( SDL_PollEvent( &e ) != 0 )
             {
@@ -177,24 +193,39 @@ int main( int argc, char* args[] )
                     quit = true;
                 }
             }
-            srand(time(NULL));
+            
 
             Uint32 totalFrameTicks = 0;
             Uint32 totalFrames = 0;
-
+			Uint32 time = SDL_GetTicks();	
+		
             totalFrames++;
             Uint32 startTicks = SDL_GetTicks();
             Uint64 startPerf = SDL_GetPerformanceCounter();
+			int colarr[3] = {255,0,255};
+			Block block(SCREEN_WIDTH/2,SCREEN_HEIGHT/2,bcount);
+			blocks.push_back(block);
+			blocks[bcount].color = colarr;
+			blocks[bcount].setBorn(time);
+            blocks[bcount].setlastUpdate(time);
+			bcount+=1;
+
+			int colarr2[3] = {0,0,255};
+			Block block2(SCREEN_WIDTH/3,SCREEN_HEIGHT/3,bcount);
+			blocks.push_back(block2);
+			blocks[bcount].color = colarr2;
+			blocks[bcount].setBorn(time);
+            blocks[bcount].setlastUpdate(time);
+			bcount+=1;
 
 
             
             blocks = loop(blocks, grid);
           
 
-            grid.printFilled();
+            //grid.printFilled();
 
-            //Update screen
-            SDL_RenderPresent( gRenderer );
+
            // End frame timing
             Uint32 endTicks = SDL_GetTicks();
             Uint64 endPerf = SDL_GetPerformanceCounter();
@@ -203,16 +234,20 @@ int main( int argc, char* args[] )
           
             // Display strings
            // cout<< frameTime << endl;
-            SDL_Delay(floor(40.666f - frameTime));
+            SDL_Delay(floor(16.666f - frameTime));
 
             
             // Display window
             SDL_RenderPresent(gRenderer);
+			cout<<"count = "<< count<<endl;
+			//if(count > 10) break;
         }
+		blocks.clear();
 		
 	}
 
 	//Free resources and close SDL
+
 	close();
 
 	return 0;

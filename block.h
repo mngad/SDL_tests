@@ -1,19 +1,19 @@
 #include <SDL2/SDL.h>
 #include "grid.h"
 
-const float GRAVITY = 100.0f; 
+const float GRAVITY = 400.0f; 
 
 class Block
 {
     public:
         //The dimensions of the dot
-
-
+        int *color;
+        int ID;
         //Maximum axis velocity of the dot
         static const int BLOCK_VEL = 10;
 
         //Initializes the variables
-        Block(int x,int y);
+        Block(int x,int y,int ID);
 
         //Takes key presses and adjusts the dot's velocity
         void handleEvent( SDL_Event& e );
