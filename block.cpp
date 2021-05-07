@@ -47,9 +47,7 @@ void Block::move(float dT, Grid grid)
     //     mPosY = oldmPosY;
     // }
     grid.setFilled(mPosX/5,mPosY/5);
-    cout<< "mposX after "<< mPosX<<endl;
-    cout<< "mposX after "<< mPosX/5 <<endl;
-    cout<< "mposY after "<< mPosY<<endl;
+    cout<< "mVelY after "<< mVelY/5 <<endl;
     cout<< "mposY after "<< mPosY/5 <<endl;
 
 }
